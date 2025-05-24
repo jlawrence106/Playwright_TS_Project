@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { config } from 'dotenv';
 
 /**
  * Read environment variables from file.
@@ -10,7 +11,23 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
+ * 
+ * 
  */
+
+if (process.env.ENVIRONMENT)
+{
+  config({
+    path: `.env.${process.env.ENVIRONMENT}`,
+    override: true
+  });
+  console.log(`Reading ${process.env.ENVIRONMENT}`);
+}
+else {
+  config();
+ // console.log('Reading SIT');
+}
+
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
@@ -27,10 +44,12 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://localhost:3000',
-
+    screenshot: 'only-on-failure',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
+
+  
 
   /* Configure projects for major browsers */
   projects: [
@@ -39,7 +58,7 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    {
+    /*{
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
@@ -47,7 +66,7 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-    },
+    },*/
 
     /* Test against mobile viewports. */
     // {
